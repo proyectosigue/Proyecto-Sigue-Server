@@ -80,7 +80,6 @@ class ThreadController extends Controller
             $thread->status = 0;
             $thread->save();
 
-
             return response()->json([
                 'header' => 'Éxito',
                 'status' => 'success',
@@ -101,17 +100,17 @@ class ThreadController extends Controller
             $user->issuingThreads()->update(['status' => 0]);
             $user->receiverThreads()->update(['status' => 0]);
 
-
-            return response()->json([
-                'header' => 'Éxito',
-                'status' => 'success',
-                'messages' => ['Todos los temas han sido desactivados'],
-            ]);
+            $api_response = APIResponse::success('Todos los temas han sido desactivados');
+            return response()->json($api_response);
 
         } catch (\Exception $e) {
-            return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
-                ['Ocurrió un error en el registro'],
-                ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);
+
+            $errors = ['Ocurrió un error'];
+            $debug_message = $e->getMessage() . ' on line ' . $e->getLine() .
+                ' file ' . $e->getFile();
+
+            $api_response = APIResponse::error($errors, $debug_message);
+            return response()->json($api_response);
         }
     }
 
