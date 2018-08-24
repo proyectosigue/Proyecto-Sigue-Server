@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Thread;
 use App\Message;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Traits\APIResponse;
 
@@ -19,6 +20,9 @@ class MessageController extends Controller
             $message->thread()->associate($thread);
             $message->replier()->associate($user);
             $message->save();
+
+            $thread->updated_at = Carbon::now();
+            $thread->save();
 
             return response()->json(APIResponse::success('Mensaje enviado'));
 
@@ -43,7 +47,7 @@ class MessageController extends Controller
                 'messages' => ['Mensaje desactivado'],
             ]);
 
-        }catch(\Exception $e){
+        } catch(\Exception $e){
             return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
                 ['Ocurrió un error en el registro'],
                 ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);

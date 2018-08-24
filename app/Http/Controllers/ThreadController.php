@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Thread;
 use App\Message;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Traits\APIResponse;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,7 @@ class ThreadController extends Controller
                 Message::whereThreadId($thread->id)->where('id', '>', $last_message)->
                 with('replier')->get());
         }
-        else {
-            return response()->json($thread->messages()->with('replier')->get());
-        }
+        return response()->json($thread->messages()->with('replier')->get());
     }
 
     // TODO Se debería de poder inyectar User $receiver_user pero lo recibe como nulo
@@ -119,9 +118,7 @@ class ThreadController extends Controller
         $threads = Thread::active()->where(function ($q) use ($user) {
             return $q->where('user_id_issuing', $user->id)
                 ->orWhere('user_id_receiver', $user->id);
-        })->with(['messages' => function($q){
-            return $q->descendant()->first();
-        }])->descendant()->get();
+        })->with('lastMessage')->descendant()->get();
 
         return response()->json($threads);
     }

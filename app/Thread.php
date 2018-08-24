@@ -25,6 +25,11 @@ class Thread extends Model
         return $this->hasMany(Message::class, 'thread_id', 'id');
     }
 
+    public function lastMessage(){
+        return $this->hasOne(Message::class, 'thread_id', 'id')
+            ->orderBy('updated_at', 'desc');
+    }
+
     public function scopeActive($query){
         return $query->where('status', 1);
     }
@@ -34,7 +39,7 @@ class Thread extends Model
     }
 
     public function scopeDescendant($query){
-        return $query->orderBy('id', 'desc');
+        return $query->orderBy('updated_at', 'desc');
     }
 
 
