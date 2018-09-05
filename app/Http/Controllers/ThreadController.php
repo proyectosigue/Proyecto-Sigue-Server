@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\User;
 use App\Thread;
 use App\Message;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Traits\APIResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ThreadController extends Controller
 {
 
     public function show(Thread $thread, $last_message = null){
-
         if(isset($last_message)) {
             return response()->json(
                 Message::whereThreadId($thread->id)->where('id', '>', $last_message)->
@@ -70,6 +70,10 @@ class ThreadController extends Controller
             'status' => 'success',
             'messages' => ['Se ha actualizado el tema'],
         ]);
+    }
+
+    public function uploadFile(Request $request, Thread $thread){
+        File::upload($thread, $request->file, 'threads');
     }
 
     public function destroy(Request $request, Thread $thread)

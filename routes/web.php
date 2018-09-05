@@ -37,6 +37,7 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::get('threads/{user}', 'ThreadController@userThreads');
     Route::get('threads/{thread}/messages/{last_message?}', 'ThreadController@show');
     Route::post('threads/messages/{user}', 'ThreadController@store');
+    Route::post('threads/{thread}/file/upload', 'ThreadController@uploadFile');
     Route::put('threads/{thread}/update', 'ThreadController@update');
     Route::delete('threads/{thread}', 'ThreadController@destroy');
     Route::delete('threads/{user}/delete-all', 'ThreadController@destroyAll');

@@ -25,6 +25,10 @@ class Thread extends Model
         return $this->hasMany(Message::class, 'thread_id', 'id');
     }
 
+    public function files(){
+        return $this->morphToMany(File::class,  'filable');
+    }
+
     public function lastMessage(){
         return $this->hasOne(Message::class, 'thread_id', 'id')
             ->orderBy('updated_at', 'desc');
