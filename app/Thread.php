@@ -22,7 +22,7 @@ class Thread extends Model
     }
 
     public function messages(){
-        return $this->hasMany(Message::class, 'thread_id', 'id');
+        return $this->hasMany(Message::class, 'thread_id', 'id')->with('replier');
     }
 
     public function files(){

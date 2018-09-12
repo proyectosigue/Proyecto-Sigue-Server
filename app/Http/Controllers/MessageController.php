@@ -8,6 +8,8 @@ use App\Message;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Traits\APIResponse;
+use App\Events\NewThreadMessage;
+use Illuminate\Support\Facades\Event;
 
 class MessageController extends Controller
 {
@@ -23,6 +25,8 @@ class MessageController extends Controller
 
             $thread->updated_at = Carbon::now();
             $thread->save();
+
+            Event::fire(new NewThreadMessage($message));
 
             return response()->json(APIResponse::success('Mensaje enviado'));
 
