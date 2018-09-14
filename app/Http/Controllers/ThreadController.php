@@ -16,15 +16,23 @@ use Illuminate\Support\Facades\Event;
 class ThreadController extends Controller
 {
 
-    public function show(Thread $thread, $last_message = null){
-
-        Event::fire(new ThreadHistoryRequested($thread));
-        /*if(isset($last_message)) {
-            return response()->json(
-                Message::whereThreadId($thread->id)->where('id', '>', $last_message)->
-                with('replier')->get());
+    public function show(Thread $thread, $start_message_id)
+    {
+        try {
+            Event::fire(new ThreadHistoryRequested($thread, $start_message_id));
+            /*if(isset($last_message)) {
+                return response()->json(
+                    Message::whereThreadId($thread->id)->where('id', '>', $last_message)->
+                    with('replier')->get());
+            }
+            return response()->json($thread->messages()->with('replier')->get());*/
+            return response()->json(APIResponse::success('Historial recuperado'));
+        } catch (\Exception $e) {
+            $errors = ['Ocurrió un error recuperando los mensajes '];
+            $debug_message = $e->getMessage() . ' on line ' . $e->getLine();
+            return response()->json(APIResponse::error($errors, $debug_message));
         }
-        return response()->json($thread->messages()->with('replier')->get());*/
+
     }
 
     // TODO Se debería de poder inyectar User $receiver_user pero lo recibe como nulo
@@ -76,7 +84,8 @@ class ThreadController extends Controller
         ]);
     }
 
-    public function uploadFile(Request $request, Thread $thread){
+    public function uploadFile(Request $request, Thread $thread)
+    {
         File::upload($thread, $request->file, 'threads');
     }
 

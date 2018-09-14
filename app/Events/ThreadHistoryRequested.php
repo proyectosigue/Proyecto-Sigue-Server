@@ -16,15 +16,17 @@ class ThreadHistoryRequested implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $thread;
+    public $start_message_id;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Thread $thread)
+    public function __construct(Thread $thread, $start_message_id)
     {
         $this->thread = $thread;
+        $this->start_message_id = $start_message_id;
     }
 
     /**
@@ -39,7 +41,9 @@ class ThreadHistoryRequested implements ShouldBroadcast
 
     public function broadcastWith(){
         return [
-            'messages' => $this->thread->load('messages'),
+            'thread' => $this->thread->load(['messages' => function($query){
+                return $query->where('id', '>=', $this->start_message_id);
+            }])
         ];
     }
 
