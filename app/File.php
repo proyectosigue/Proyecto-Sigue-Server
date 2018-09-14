@@ -14,7 +14,7 @@ class File extends Model
         'path',
         'filable_id',
         'filable_type',
-        'status'
+        'status',
     ];
 
     public function threads(){

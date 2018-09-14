@@ -84,11 +84,6 @@ class ThreadController extends Controller
         ]);
     }
 
-    public function uploadFile(Request $request, Thread $thread)
-    {
-        File::upload($thread, $request->file, 'threads');
-    }
-
     public function destroy(Request $request, Thread $thread)
     {
         try {
@@ -138,6 +133,10 @@ class ThreadController extends Controller
         })->with('lastMessage')->descendant()->get();
 
         return response()->json($threads);
+    }
+
+    public function threadFiles(Thread $thread){
+        return response()->json($thread->files);
     }
 
     public function receiverThreads(Request $request, User $user)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\User;
 use App\Thread;
 use App\Message;
@@ -22,6 +23,9 @@ class MessageController extends Controller
             $message->thread()->associate($thread);
             $message->replier()->associate($user);
             $message->save();
+
+            if(isset($request->base64_file))
+                File::upload($thread, $request->base64_file, 'threads');
 
             $thread->updated_at = Carbon::now();
             $thread->save();
