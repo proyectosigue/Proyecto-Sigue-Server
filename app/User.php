@@ -47,7 +47,7 @@ class User extends Authenticatable
     }
 
     public function getRoleDescriptionAttribute(){
-        return $this->roles()->first()->description;
+        return $this->roles()->first() !== null ? $this->roles()->first()->description : "";
     }
 
     public function getFullNameAttribute($value)

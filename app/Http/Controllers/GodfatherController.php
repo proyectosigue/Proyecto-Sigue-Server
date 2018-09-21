@@ -7,6 +7,7 @@ use App\User;
 use App\Role;
 use Exception;
 use App\Godson;
+use App\Thread;
 use Illuminate\Http\Request;
 use App\Http\Requests\GodfatherRequest;
 use Illuminate\Support\Facades\Storage;
@@ -93,6 +94,7 @@ class GodfatherController extends Controller
     {
         try {
             $user->roles()->detach(Role::get());
+
             $user->delete();
             return response()->json(['status' => 'Éxito', 'messages' => ['Se ha borrado el padrino']]);
         } catch (Exception $e) {
