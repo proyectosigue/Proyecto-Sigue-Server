@@ -21,9 +21,11 @@ Route::post("login", "AuthenticateController@authenticate")->name("login");
 Route::post("godfathers/sign-up", "GodfatherController@store");
 Route::post('godfathers/{user}/upload-profile-image', 'GodfatherController@uploadProfileImage');
 
+Route::get('events', 'EventController@index');
+
 Route::middleware(["jwt.auth"])->group(function () {
 
-    Route::get('godfathers', 'UserController@index');
+    Route::get('godfathers', 'GodfatherController@index');
     Route::get('godfathers/{user}', 'GodfatherController@show');
     Route::get('godfathers/{user}/godsons', 'GodfatherController@getGodsons');
     Route::post('godfathers', 'GodfatherController@store');
@@ -45,5 +47,7 @@ Route::middleware(["jwt.auth"])->group(function () {
 
     Route::post('message/{thread}/user/{user}', 'MessageController@store');
     Route::delete('message/{message}', 'MessageController@destroy');
+
+    Route::post('events', 'EventController@store');
 
 });

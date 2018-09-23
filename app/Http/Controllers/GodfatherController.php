@@ -16,7 +16,7 @@ class GodfatherController extends Controller
 {
     public function index()
     {
-        return response()->json(User::godfathers()->get());
+        return response()->json(User::godfathers()->active()->get());
     }
 
     public function show(User $user)
@@ -93,10 +93,11 @@ class GodfatherController extends Controller
     public function destroy(User $user)
     {
         try {
-            $user->roles()->detach(Role::get());
 
-            $user->delete();
-            return response()->json(['status' => 'Éxito', 'messages' => ['Se ha borrado el padrino']]);
+            $user->status = 0;
+            $user->save();
+
+            return response()->json(['status' => 'Éxito', 'messages' => ['Se ha desactivado el padrino']]);
         } catch (Exception $e) {
             return response()->json(['status' => 'Error', 'messages' =>
                 ['Ocurrió un error al borrar'],

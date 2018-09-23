@@ -46,6 +46,10 @@ class User extends Authenticatable
         })->where('status', 1)->orderBy('id', 'asc');
     }
 
+    public function scopeActive($query){
+       return $query->whereStatus(1);
+    }
+
     public function getRoleDescriptionAttribute(){
         return $this->roles()->first() !== null ? $this->roles()->first()->description : "";
     }

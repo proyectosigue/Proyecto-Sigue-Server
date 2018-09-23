@@ -12,8 +12,8 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
-        /*$permission = new Permission();
+        $permission = new Permission();
         $permission->fill(['description' => 'Añadir']);
-        $permission->save();*/
+        $permission->save();
     }
 }

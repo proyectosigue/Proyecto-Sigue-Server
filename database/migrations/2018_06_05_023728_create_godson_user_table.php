@@ -32,6 +32,6 @@ class CreateGodsonUserTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('godson_user');
     }
 }
