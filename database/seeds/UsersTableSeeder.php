@@ -16,7 +16,7 @@ class UsersTableSeeder extends Seeder
         $user = [   
             'first_name' => 'Daniela',
             'last_name' => 'Sánchez',
-            'email' => 'coordinacion@proyectosigue.com.mx',
+            'email' => '',
             'interests' => 'Proyecto Sigue',
             'profile_image' => '',  
             'password' => Hash::make('123456')
