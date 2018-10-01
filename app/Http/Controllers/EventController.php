@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EventRequest;
+use DB;
 use App\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 class EventController extends Controller
 {
     public function index(){
-        return response()->json(Event::all());
+    return response()->json(Event::orderBy('created_at', 'desc')->get());
     }
 
     public function store(EventRequest $request){
@@ -43,6 +44,27 @@ class EventController extends Controller
         return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
             ['Ocurrió un error en el registro'],
             ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);
+      }
+    }
+
+    public function destroy(Request $request, Event $event)
+    {
+      try {
+        Storage::delete($event->getOriginal('image'));
+        DB::table('events')->where('id', $event->id)->delete();
+
+        return response()->json([
+          'header' => 'Exito',
+          'status' => 'success',
+          'message' => ['Evento eliminado'],
+        ]);
+      } catch (\Exception $e) {
+        dd($e->getMessage());
+        return response()->json([
+          'header' => 'Error',
+          'status' => 'error',
+          'messages' => ['Ocurrió un error en el registro'], ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]
+        ]);
       }
     }
 }

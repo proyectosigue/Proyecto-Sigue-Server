@@ -20,12 +20,6 @@ class ThreadController extends Controller
     {
         try {
             Event::fire(new ThreadHistoryRequested($thread, $start_message_id));
-            /*if(isset($last_message)) {
-                return response()->json(
-                    Message::whereThreadId($thread->id)->where('id', '>', $last_message)->
-                    with('replier')->get());
-            }
-            return response()->json($thread->messages()->with('replier')->get());*/
             return response()->json(APIResponse::success('Historial recuperado'));
         } catch (\Exception $e) {
             $errors = ['Ocurrió un error recuperando los mensajes '];

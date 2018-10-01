@@ -49,5 +49,6 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::delete('message/{message}', 'MessageController@destroy');
 
     Route::post('events', 'EventController@store');
+    Route::delete('events/{event}', 'EventController@destroy');
 
 });
