@@ -5,7 +5,6 @@ namespace App;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class File extends Model
 {
