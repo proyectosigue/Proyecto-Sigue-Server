@@ -23,6 +23,8 @@ Route::post('godfathers/{user}/upload-profile-image', 'GodfatherController@uploa
 
 Route::get('events', 'EventController@index');
 
+Route::get('files/{file}/download', 'FileController@download');
+
 Route::middleware(["jwt.auth"])->group(function () {
 
     Route::get('godfathers', 'GodfatherController@index');

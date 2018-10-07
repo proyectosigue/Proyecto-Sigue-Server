@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
-    public function index($model){
-        return response()->json($model->load('files')->get());
+
+    public function download(File $file){
+        $path = "$file->path/$file->name";
+        $name = basename($file->name);
+        return response()->download($path, $name);
     }
 
 }
