@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Exception;
 use App\Godson;
 use App\Http\Requests\GodsonRequest;
+use App\User;
+use Exception;
 
 class GodsonController extends Controller
 {
@@ -45,7 +45,8 @@ class GodsonController extends Controller
                 'age' => $request->input('age'),
                 'orphan_house_id' => $request->input('orphan_house_id')
             ]);
-            $godson->godfathers()->toggle($request->input('godfather_id'));
+
+            $godson->godfathers()->attach($request->godfather_id);
 
             return response()->json(['status' => 'Éxito', 'messages' => ['Se ha registrado al usuario como Ahijado']]);
         } catch (Exception $e) {
@@ -86,6 +87,7 @@ class GodsonController extends Controller
     public function destroy(Godson $godson)
     {
         try {
+            $godson->godfathers()->detach();
             $godson->delete();
             return response()->json(['status' => 'Éxito', 'messages' => ['Se ha borrado el ahijado']]);
         } catch (Exception $e) {
