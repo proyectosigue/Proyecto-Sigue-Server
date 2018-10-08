@@ -6,6 +6,7 @@ use App\Godson;
 use App\Http\Requests\GodsonRequest;
 use App\User;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class GodsonController extends Controller
 {
@@ -29,10 +30,10 @@ class GodsonController extends Controller
     public function store(GodsonRequest $request)
     {
         try {
-            if(isset($request->profile_image)) {
-                $photoName = time() . '.' . $request->profile_image->getClientOriginalExtension();
-                $request->profile_image->move(storage_path('app/public/profile_images'), $photoName);
-                $photography_url = storage_path('app/public/profile_images') . '/' . $photoName;
+            if ($request->profile_image) {
+              $file_date_title = date('H_i_s').'_profile_images.jpeg';
+              $photography_url = "profile-images/$file_date_title";
+              Storage::put($photography_url, base64_decode($request->profile_image['value']));
             }
             else {
                 $photography_url = "";
