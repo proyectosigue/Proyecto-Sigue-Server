@@ -33,7 +33,7 @@ class GodsonController extends Controller
             if ($request->profile_image) {
               $file_date_title = date('H_i_s').'_profile_images.jpeg';
               $photography_url = "profile-images/$file_date_title";
-              Storage::put($photography_url, base64_decode($request->profile_image['value']));
+              Storage::put($photography_url, base64_decode($request->profile_image));
             }
             else {
                 $photography_url = "";
