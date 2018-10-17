@@ -11,6 +11,7 @@ use App\Thread;
 use Illuminate\Http\Request;
 use App\Http\Requests\GodfatherRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\GodfatherEditRequest;
 
 class GodfatherController extends Controller
 {
@@ -64,25 +65,32 @@ class GodfatherController extends Controller
         }
     }
 
-    public function update(GodfatherRequest $request, $godfather)
+    public function update(GodfatherEditRequest $request, $godfather)
     {
-
-        if (count(User::where('email', $request->input('email'))->get()) > 0) {
-            return response()->json(['status' => 'Error', 'messages' => ['El email ya está dado de alta']]);
-        }
 
         try {
 
-            $godfather->update([
-                'first_name' => $request->input('first_name'),
-                'last_name' => $request->input('last_name'),
-                'interests' => $request->input('interests'),
-                'password' => Hash::make($request->input('password')),
-                'email' => $request->input('email'),
-                'profile_image' => '',
+            $godfather = User::find($godfather);
+            $godfather->first_name = $request->first_name;
+            $godfather->last_name = $request->last_name;
+            $godfather->interests = isset($request->interests) ? $request->interests : null;
+            $godfather->email = $request->email;
+
+            if($request->password){
+                $godfather->password = Hash::make($request->password);
+            }
+
+            $godfather->save();
+
+            return response()->json([
+                'header' => 'Éxito',
+                'status' => 'success',
+                'messages' => ['Se ha actualizado la información del padrino'],
+                'data' => [
+                    'id' => $godfather->id
+                ]
             ]);
 
-            return response()->json(['status' => 'Éxito', 'messages' => ['Se ha actualizado la información del padrino']]);
         } catch (Exception $e) {
             return response()->json(['status' => 'Error', 'messages' =>
                 ['Ocurrió un error al actualizar'],
