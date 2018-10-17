@@ -23,7 +23,7 @@ class GodfatherController extends Controller
     public function show(User $user)
     {
         try {
-            return response()->json(['user' => $user]);
+            return response()->json(['godfather' => $user]);
         } catch (Exception $e) {
             return response()->json(['status' => 'Error', 'messages' =>
                 ['Ocurrió un error al obtener'],
@@ -86,9 +86,7 @@ class GodfatherController extends Controller
                 'header' => 'Éxito',
                 'status' => 'success',
                 'messages' => ['Se ha actualizado la información del padrino'],
-                'data' => [
-                    'id' => $godfather->id
-                ]
+                'data' => $godfather
             ]);
 
         } catch (Exception $e) {
