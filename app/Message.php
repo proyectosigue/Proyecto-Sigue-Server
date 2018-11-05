@@ -11,6 +11,7 @@ class Message extends Model
         'body',
         'thread_id',
         'user_id_replier',
+        'user_id_receiver',
         'status',
         'created_at',
         'updated_at'
@@ -22,6 +23,10 @@ class Message extends Model
 
     public function replier(){
         return $this->belongsTo(User::class, 'user_id_replier');
+    }
+
+    public function receiver(){
+        return $this->belongsTo(User::class, 'user_id_receiver');
     }
 
     public function scopeActive($query){

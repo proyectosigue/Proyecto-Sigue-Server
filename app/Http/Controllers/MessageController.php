@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use FCM;
 use App\File;
 use App\User;
 use App\Thread;
 use App\Message;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Traits\FcmStream;
 use App\Http\Traits\APIResponse;
 use App\Events\NewThreadMessage;
 use Illuminate\Support\Facades\Event;
@@ -15,16 +17,18 @@ use Illuminate\Support\Facades\Event;
 class MessageController extends Controller
 {
 
-    public function store(Request $request, Thread $thread, User $user){
+    public function store(Request $request, Thread $thread, User $user)
+    {
         try {
 
             $message = new Message();
             $message->body = $request->body;
             $message->thread()->associate($thread);
             $message->replier()->associate($user);
+            $message->receiver()->associate($request->user_id_receiver);
             $message->save();
 
-            if(isset($request->base64_file))
+            if (isset($request->base64_file))
                 File::upload($thread, $request->base64_file, 'threads');
 
             $thread->updated_at = Carbon::now();
@@ -32,9 +36,12 @@ class MessageController extends Controller
 
             Event::fire(new NewThreadMessage($message));
 
+            $title = 'Mensaje de '.$message->replier->first_name.' sobre '.$thread->subject;
+            FcmStream::sendMessageNotification($title, $message->body, $message->receiver->fcm_token);
+
             return response()->json(APIResponse::success('Mensaje enviado'));
 
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
 
             $errors = ['Ocurrió un error en el registro'];
             $debug_message = $e->getMessage() . ' on line ' . $e->getLine();
@@ -43,7 +50,8 @@ class MessageController extends Controller
         }
     }
 
-    public function destroy(Request $request, Message $message){
+    public function destroy(Request $request, Message $message)
+    {
         try {
 
             $message->status = 0;
@@ -55,7 +63,7 @@ class MessageController extends Controller
                 'messages' => ['Mensaje desactivado'],
             ]);
 
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
                 ['Ocurrió un error en el registro'],
                 ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);

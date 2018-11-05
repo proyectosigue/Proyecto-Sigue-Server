@@ -27,6 +27,8 @@ Route::get('files/{file}/download', 'FileController@download');
 
 Route::middleware(["jwt.auth"])->group(function () {
 
+    Route::put('users/{user}/fcm', 'UserController@updateFCMToken');
+
     Route::get('godfathers', 'GodfatherController@index');
     Route::get('godfathers/{user}', 'GodfatherController@show');
     Route::get('godfathers/{user}/godsons', 'GodfatherController@getGodsons');
