@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
-    public function index(){
-    return response()->json(Event::orderBy('created_at', 'desc')->get());
+    public function index()
+    {
+      return response()->json(Event::orderBy('created_at', 'desc')->get());
     }
 
-    public function store(EventRequest $request){
+    public function store(EventRequest $request) {
       try {
         $eventInstance = Event::create([
           "title" => $request->input('title'),
@@ -42,7 +43,30 @@ class EventController extends Controller
 
       } catch (Exception $e) {
         return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
-            ['Ocurrió un error en el registro'],
+            ['Ocurrió un error creando noticia'],
+            ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);
+      }
+    }
+
+    public function update(EventRequest $request, Event $event)
+    {
+      try {
+        $event->title = $request->input('title');
+        $event->description = $request->input('description');
+        $event->save();
+
+        return response()->json([
+            'header' => 'Éxito',
+            'status' => 'success',
+            'messages' => ['Se ha actualizado la noticia'],
+            'data' => [
+                'id' => $event->id
+            ]
+        ]);
+
+      } catch (Exception $e) {
+        return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>
+            ['Ocurrió un error actualizando noticia'],
             ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);
       }
     }
