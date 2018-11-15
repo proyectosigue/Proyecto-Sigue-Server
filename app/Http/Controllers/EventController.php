@@ -53,6 +53,20 @@ class EventController extends Controller
       try {
         $event->title = $request->input('title');
         $event->description = $request->input('description');
+
+        if ($request->image) {
+
+          if ($event->image) {
+            Storage::delete($event->getOriginal('image'));
+          }
+
+          $file_date_title = date('H_i_s').'_event_image.jpeg';
+          $full_file_address = "event-images/$file_date_title";
+          Storage::put($full_file_address, base64_decode($request->image));
+
+          $event->image = $full_file_address;
+        }
+
         $event->save();
 
         return response()->json([
