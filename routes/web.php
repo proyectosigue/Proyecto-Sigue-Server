@@ -37,7 +37,7 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::put('godfathers/{user}', 'GodfatherController@update');
     Route::delete('godfathers/{user}', 'GodfatherController@destroy');
 
-    Route::get('godson/{godson}/godfathers', 'GodsonController@getGodfathers');
+    Route::get('godsons/{godson}/godfathers', 'GodsonController@getGodfathers');
     Route::resource('godsons', 'GodsonController');
 
     Route::get('threads/{user}', 'ThreadController@userThreads');
