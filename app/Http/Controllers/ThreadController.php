@@ -30,14 +30,14 @@ class ThreadController extends Controller
     }
 
     // TODO Se debería de poder inyectar User $receiver_user pero lo recibe como nulo
-    public function store(Request $request, $receiver_user)
+    public function store(Request $request)
     {
         try {
 
             $thread = new Thread();
             $thread->subject = $request->subject;
-            $thread->issuing()->associate(Auth::user()->id);
-            $thread->receiver()->associate($receiver_user);
+            $thread->issuing()->associate($request->user_issuing_id);
+            $thread->receiver()->associate($request->user_receiver_id);
             $thread->save();
 
             $api_response = APIResponse::success('Se ha creado el tema');
