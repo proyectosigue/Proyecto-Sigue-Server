@@ -55,4 +55,6 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::post('events', 'EventController@store');
     Route::delete('events/{event}', 'EventController@destroy');
 
+    Route::post('notifications/{user_id}/{thread_id}/{message_id}/store', 'NotificacionController@store');
+    Route::put('notifications/{user_id}/{thread_id}/destroy', 'NotificationController@destroy');
 });
