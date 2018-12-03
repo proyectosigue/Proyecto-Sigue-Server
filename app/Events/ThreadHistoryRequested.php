@@ -42,7 +42,7 @@ class ThreadHistoryRequested implements ShouldBroadcast
     public function broadcastWith(){
         return [
             'thread' => $this->thread->load(['messages' => function($query){
-                return $query->where('id', '>=', $this->start_message_id);
+                return $query->where('id', '>=', $this->start_message_id)->orderBy('id','asc');
             }])
         ];
     }

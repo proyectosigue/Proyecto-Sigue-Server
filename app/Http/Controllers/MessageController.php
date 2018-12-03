@@ -8,6 +8,7 @@ use App\User;
 use App\Thread;
 use App\Message;
 use Carbon\Carbon;
+use App\Notification;
 use Illuminate\Http\Request;
 use App\Http\Traits\FcmStream;
 use App\Http\Traits\APIResponse;
@@ -28,22 +29,34 @@ class MessageController extends Controller
             $message->receiver()->associate($request->user_id_receiver);
             $message->save();
 
-            if (isset($request->base64_file))
-                File::upload($thread, $request->base64_file, 'threads');
+            if (isset($request->base64_file) && isset($request->file_name))
+                File::upload($thread, $request->file_name, $request->base64_file, 'threads');
 
             $thread->updated_at = Carbon::now();
             $thread->save();
 
             Event::fire(new NewThreadMessage($message));
 
-            $title = 'Mensaje de '.$message->replier->first_name.' sobre '.$thread->subject;
-            FcmStream::sendMessageNotification($title, $message->body, $message->receiver->fcm_token);
+            if($message->receiver->fcm_token) {
+
+                $threadUserNotification = $thread->whereHas('notification', function($query) use($message) {
+                    $query->where('user_id', $message->receiver->id);
+                })->count();
+
+                if(!$threadUserNotification) {
+
+                    $title = 'Mensaje de ' . $message->replier->first_name . ' sobre ' . $thread->subject;
+                    FcmStream::sendMessageNotification($title, 'Tienes 1 o más mensajes', $message->receiver->fcm_token);
+
+                    Notification::saveSingleNotification($message->receiver->id, $thread->id, $message->id);
+                }
+            }
 
             return response()->json(APIResponse::success('Mensaje enviado'));
 
         } catch (\Exception $e) {
 
-            $errors = ['Ocurrió un error en el registro'];
+            $errors = ['Ocurrió un error en el registro'.$e->getMessage() . ' on line ' . $e->getLine()." ".$e->getFile()];
             $debug_message = $e->getMessage() . ' on line ' . $e->getLine();
 
             return response()->json(APIResponse::error($errors, $debug_message));

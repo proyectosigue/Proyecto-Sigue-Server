@@ -34,6 +34,11 @@ class Thread extends Model
             ->orderBy('updated_at', 'desc');
     }
 
+    public function notification(){
+        return $this->hasOne(Notification::class, 'thread_id', 'id')
+            ->orderBy('id', 'desc');
+    }
+
     public function scopeActive($query){
         return $query->where('status', 1);
     }

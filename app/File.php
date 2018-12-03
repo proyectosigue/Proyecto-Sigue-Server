@@ -20,22 +20,16 @@ class File extends Model
         return $this->morphedByMany(Thread::class, 'filable');
     }
 
-    public static function upload($entity, $file, $folder){
+    public static function upload($entity, $file_name, $base64, $folder){
         try {
 
-            $contents = file_get_contents($file);
-            $f = finfo_open();
-            $mime_type = finfo_buffer($f, $contents, FILEINFO_MIME_TYPE);
-            $file_info = explode('/', $mime_type);
-            $ext = $file_info[1];
+            $contents = file_get_contents($base64);
 
-            $file_title = date('H_i_s').".".$ext;
-
-            Storage::put("$folder/$file_title", $contents);
+            Storage::put("$folder/$file_name", $contents);
 
             if($entity->files() !== null) {
                 $entity->files()->save(new File([
-                    'name' => $file_title,
+                    'name' => $file_name,
                     'path' => "storage/$folder/"
                 ]));
             }

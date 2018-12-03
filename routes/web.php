@@ -27,7 +27,7 @@ Route::get('files/{file}/download', 'FileController@download');
 
 Route::middleware(["jwt.auth"])->group(function () {
 
-    Route::put('users/{user}/fcm', 'UserController@updateFCMToken');
+    Route::put('users/fcm', 'UserController@updateFCMToken');
 
     Route::get('godfathers', 'GodfatherController@index');
     Route::get('godfathers/{user}', 'GodfatherController@show');
@@ -56,6 +56,7 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::put('events/{event}', 'EventController@update');
     Route::delete('events/{event}', 'EventController@destroy');
 
-    Route::post('notifications/{user_id}/{thread_id}/{message_id}/store', 'NotificacionController@store');
-    Route::put('notifications/{user_id}/{thread_id}/destroy', 'NotificationController@destroy');
+    Route::put('notifications', 'NotificationController@destroy');
+    //Route::post('notifications/{user_id}/{thread_id}/{message_id}/store', 'NotificacionController@store');
+    //Route::put('notifications/{user_id}/{thread_id}/destroy', 'NotificationController@destroy');
 });

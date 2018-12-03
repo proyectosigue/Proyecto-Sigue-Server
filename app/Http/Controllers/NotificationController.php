@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Thread;
 use App\Notification;
 use Illuminate\Http\Request;
 

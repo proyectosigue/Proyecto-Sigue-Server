@@ -124,7 +124,7 @@ class ThreadController extends Controller
         $threads = Thread::active()->where(function ($q) use ($user) {
             return $q->where('user_id_issuing', $user->id)
                 ->orWhere('user_id_receiver', $user->id);
-        })->with('lastMessage')->descendant()->get();
+        })->with(['lastMessage', 'notification'])->descendant()->get();
 
         return response()->json($threads);
     }

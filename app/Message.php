@@ -29,6 +29,11 @@ class Message extends Model
         return $this->belongsTo(User::class, 'user_id_receiver');
     }
 
+    public function notification(){
+        return $this->hasOne(Notification::class, 'message_id', 'id')
+            ->orderBy('id', 'desc');
+    }
+
     public function scopeActive($query){
         return $query->where('status', 1);
     }

@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class, 'user_id_receiver', 'id');
     }
 
+    public function notification(){
+        return $this->hasOne(Notification::class, 'user_id', 'id')
+            ->orderBy('id', 'desc');
+    }
+
     public function scopeGodfathers($query)
     {
         return $query->whereHas('roles', function ($q) {

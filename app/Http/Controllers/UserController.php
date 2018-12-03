@@ -30,8 +30,8 @@ class UserController extends Controller
         }
     }
 
-    public function updateFCMToken(User $user, Request $request){
-        $user = User::find($user->id);
+    public function updateFCMToken(Request $request){
+        $user = User::find($request->user_id);
         $user->fcm_token = $request->fcm_token;
         $user->save();
         return response()->json(APIResponse::success('Token FCM Actualizado'));
