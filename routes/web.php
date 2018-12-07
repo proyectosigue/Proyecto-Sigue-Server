@@ -25,7 +25,7 @@ Route::get('events', 'EventController@index');
 
 Route::get('files/{file}/download', 'FileController@download');
 
-Route::middleware(["jwt.auth"])->group(function () {
+//Route::middleware(["jwt.auth"])->group(function () {
 
     Route::put('users/fcm', 'UserController@updateFCMToken');
 
@@ -59,4 +59,5 @@ Route::middleware(["jwt.auth"])->group(function () {
     Route::put('notifications', 'NotificationController@destroy');
     //Route::post('notifications/{user_id}/{thread_id}/{message_id}/store', 'NotificacionController@store');
     //Route::put('notifications/{user_id}/{thread_id}/destroy', 'NotificationController@destroy');
-});
+
+//});
