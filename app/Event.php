@@ -19,10 +19,6 @@ class Event extends Model
       return $this->belongsTo('App\User', 'created_by');
     }
 
-    public function getImageAttribute($value){
-        return ($value) ? asset("storage")."/$value" : null;
-    }
-
     public function getCreatedAtAttribute(){
         return Carbon::parse($this->attributes['created_at'])->format('d/m H:i:s');
     }

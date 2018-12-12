@@ -8,6 +8,7 @@ use App\Role;
 use Exception;
 use App\Godson;
 use App\Thread;
+use Spatie\Dropbox\Client;
 use Illuminate\Http\Request;
 use App\Http\Requests\GodfatherRequest;
 use Illuminate\Support\Facades\Storage;
@@ -115,15 +116,25 @@ class GodfatherController extends Controller
     {
         try {
             if($user->profile_image !== null && $user->profile_image !== ""){
-                Storage::delete($user->profile_image);
-                $user->profile_image = "";
+                $cloud_link = $user->getOriginal('profile_image');
+                $cloud_link = preg_replace('/(.*\/.\/*\/)\w+\//', '', $cloud_link);
+                $cloud_link = str_replace("?dl=1", '', $cloud_link);
+                Storage::disk('dropbox')->delete('profile-images-godfathers/'.$cloud_link);
             }
 
-            $file_date_title = date('H_i_s').'_profile_image.jpeg';
-            $full_file_address = "profile-images/$file_date_title";
-            Storage::put($full_file_address, base64_decode($request->profile_image['value']));
+            $file_date_title =  date('Y_m_d_H_i_s').'.jpeg';
+            $full_file_address = "profile-images-godfathers/$file_date_title";
 
-            $user->profile_image = $full_file_address;
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            Storage::disk('dropbox')->put($full_file_address, base64_decode($request->profile_image['value']));
+
+            $shared_response = $dropbox->createSharedLinkWithSettings(
+                            $full_file_address,
+                            ["requested_visibility" => "public"]
+                        );
+            $shared_url = str_replace("?dl=0", "?dl=1", $shared_response['url']);
+
+            $user->profile_image = $shared_url;
             $user->save();
 
             return response()->json([

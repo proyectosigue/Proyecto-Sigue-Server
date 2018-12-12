@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EventRequest;
 use DB;
 use App\Event;
+use Spatie\Dropbox\Client;
 use Illuminate\Http\Request;
+use App\Http\Requests\EventRequest;
 use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
@@ -24,12 +25,26 @@ class EventController extends Controller
         ]);
 
         if ($request->image['new_image']) {
-          $file_date_title = date('H_i_s').'_event_image.jpeg';
-          $full_file_address = "event-images/$file_date_title";
-          Storage::put($full_file_address, base64_decode($request->image['new_image']['value']));
+          $file_date_title = 'event-images/'.date('H_i_s').'_event_image.jpeg';
 
-          $eventInstance->image = $full_file_address;
+        //  Storage::disk('google')->put('test.txt', 'Hello World');
+        //  Storage::disk('google')->getDriver()->getAdapter()->getUrl('1MTo4Wi4kM-TtUkkRpPSKqDBZLYCB6Grl')
+        //  Storage::disk('google')->getDriver()->getAdapter()->getUrl('test3.txt')
+        // https://drive.google.com/uc?id=16Q8Il1KQaUIrPEicBJAsxrSXPiVtzltc&export=media%22
+          //Storage::disk('google_event_images')->put($file_date_title, base64_decode($request->image['new_image']['value']));
+
+          $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+          Storage::disk('dropbox')->put($file_date_title, base64_decode($request->image['new_image']['value']));
+
+            $response = $dropbox->createSharedLinkWithSettings(
+                        $file_date_title,
+                       ["requested_visibility" => "public"]
+                   );
+            $response_url = str_replace("?dl=0", "?dl=1", $response['url']);
+
+          $eventInstance->image = $response_url;
           $eventInstance->save();
+
         }
 
         return response()->json([
@@ -37,7 +52,8 @@ class EventController extends Controller
             'status' => 'success',
             'messages' => ['Se ha registrado la noticia'],
             'data' => [
-                'id' => $eventInstance->id
+                'id' => $eventInstance->id,
+                'file' => $response
             ]
         ]);
 
@@ -57,14 +73,25 @@ class EventController extends Controller
         if ($request->image) {
 
           if ($event->image) {
-            Storage::delete($event->getOriginal('image'));
+            $cloud_link = $event->getOriginal('image');
+            $cloud_link = preg_replace('/(.*\/.\/*\/)\w+\//', '', $cloud_link);
+            $cloud_link = str_replace("?dl=1", '', $cloud_link);
+            Storage::disk('dropbox')->delete('event-images/'.$cloud_link);
           }
 
-          $file_date_title = date('H_i_s').'_event_image.jpeg';
+          $file_date_title = date('Y_m_d_H_i_s').'.jpeg';
           $full_file_address = "event-images/$file_date_title";
-          Storage::put($full_file_address, base64_decode($request->image));
 
-          $event->image = $full_file_address;
+          $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+          Storage::disk('dropbox')->put($full_file_address, base64_decode($request->image));
+
+          $shared_response = $dropbox->createSharedLinkWithSettings(
+                $full_file_address,
+                ["requested_visibility" => "public"]
+            );
+          $shared_url = str_replace("?dl=0", "?dl=1", $shared_response['url']);
+
+          $event->image = $shared_url;
         }
 
         $event->save();
@@ -88,7 +115,7 @@ class EventController extends Controller
     public function destroy(Request $request, Event $event)
     {
       try {
-        Storage::delete($event->getOriginal('image'));
+        Storage::disk('dropbox')->delete($event->getOriginal('image'));
         DB::table('events')->where('id', $event->id)->delete();
 
         return response()->json([
@@ -97,7 +124,6 @@ class EventController extends Controller
           'message' => ['Evento eliminado'],
         ]);
       } catch (\Exception $e) {
-        dd($e->getMessage());
         return response()->json([
           'header' => 'Error',
           'status' => 'error',

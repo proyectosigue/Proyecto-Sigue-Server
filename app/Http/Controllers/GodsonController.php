@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Godson;
-use App\Http\Requests\GodsonRequest;
 use App\User;
 use Exception;
+use App\Godson;
+use Spatie\Dropbox\Client;
+use App\Http\Requests\GodsonRequest;
 use Illuminate\Support\Facades\Storage;
 
 class GodsonController extends Controller
@@ -31,9 +32,14 @@ class GodsonController extends Controller
     {
         try {
             if ($request->profile_image) {
-              $file_date_title = date('H_i_s').'_profile_images.jpeg';
-              $photography_url = "profile-images/$file_date_title";
-              Storage::put($photography_url, base64_decode($request->profile_image));
+              $file_date_title = date('Y_m_d_H_i_s').'.jpeg';
+              $photography_url = "profile-images-godsons/$file_date_title";
+
+              $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+              Storage::disk('dropbox')->put($photography_url, base64_decode($request->profile_image));
+              $shared_response = $dropbox->createSharedLinkWithSettings($photography_url, ["requested_visibility" => "public"]);
+              $photography_url = str_replace("?dl=0", "?dl=1", $shared_response['url']);
+
             }
             else {
                 $photography_url = "";
@@ -60,10 +66,22 @@ class GodsonController extends Controller
     public function update(GodsonRequest $request, Godson $godson){
 
         try {
-            if(isset($request->profile_image)) {
-                $photoName = time() . '.' . $request->profile_image->getClientOriginalExtension();
-                $request->profile_image->move(storage_path('app/public/profile_images'), $photoName);
-                $photography_url = storage_path('app/public/profile_images') . '/' . $photoName;
+            if($request->profile_image) {
+
+                if ($godson->profile_image) {
+                    $cloud_link = $godson->getOriginal('profile_image');
+                    $cloud_link = preg_replace('/(.*\/.\/*\/)\w+\//', '', $cloud_link);
+                    $cloud_link = str_replace("?dl=1", '', $cloud_link);
+                    Storage::disk('dropbox')->delete('profile-images-godsons/'.$cloud_link);
+                }
+
+                $photo_name = date('Y_m_d_H_i_s').'.jpeg';
+                $full_file_address = 'profile-images-godsons/'.$photo_name;
+
+                $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+                Storage::disk('dropbox')->put($full_file_address, base64_decode($request->profile_image));
+                $shared_response = $dropbox->createSharedLinkWithSettings($full_file_address, ["requested_visibility" => "public"]);
+                $photography_url = str_replace("?dl=0", "?dl=1", $shared_response['url']);
             }
             else {
                 $photography_url = "";

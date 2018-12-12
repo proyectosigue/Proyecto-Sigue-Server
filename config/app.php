@@ -179,7 +179,9 @@ return [
         //Barryvdh\Cors\ServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         LaravelFCM\FCMServiceProvider::class,
-
+        BC\Laravel\DropboxDriver\ServiceProvider::class,
+        App\Providers\GoogleDriveServiceProvider::class,
+        App\Providers\DropboxServiceProvider::class
     ],
 
     /*

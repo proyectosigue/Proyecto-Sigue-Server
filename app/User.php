@@ -64,9 +64,4 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function getProfileImageAttribute($value)
-    {
-        return asset("storage")."/$value";
-    }
-
 }

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\File;
-use App\Thread;
-use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
