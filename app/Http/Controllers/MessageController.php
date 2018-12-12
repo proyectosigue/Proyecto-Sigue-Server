@@ -39,8 +39,8 @@ class MessageController extends Controller
 
             if($message->receiver->fcm_token) {
 
-                $threadUserNotification = $thread->whereHas('notification', function($query) use($message) {
-                    $query->where('user_id', $message->receiver->id);
+                $threadUserNotification = $thread->whereHas('notification', function($query) use($message, $thread) {
+                    $query->where('user_id', $message->receiver->id)->where('thread_id', $thread->id);
                 })->count();
 
                 if(!$threadUserNotification) {
