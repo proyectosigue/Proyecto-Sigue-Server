@@ -63,12 +63,15 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        // Dropbox is the used file system for the app
        'dropbox' => [
             'driver' => 'dropbox',
             'app_secret' => env('DROPBOX_APP_SECRET'),
             'token' => env('DROPBOX_TOKEN'),
         ],
 
+        // Google filesystem is still configured in case that dropbox fails any of the requirements.
+        // A google service provider file and env variables are present also
         'google' => [
            'driver' => 'google',
            'clientId' => env('GOOGLE_DRIVE_CLIENT_ID'),

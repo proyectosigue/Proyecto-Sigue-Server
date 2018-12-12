@@ -25,13 +25,7 @@ class EventController extends Controller
         ]);
 
         if ($request->image['new_image']) {
-          $file_date_title = 'event-images/'.date('H_i_s').'_event_image.jpeg';
-
-        //  Storage::disk('google')->put('test.txt', 'Hello World');
-        //  Storage::disk('google')->getDriver()->getAdapter()->getUrl('1MTo4Wi4kM-TtUkkRpPSKqDBZLYCB6Grl')
-        //  Storage::disk('google')->getDriver()->getAdapter()->getUrl('test3.txt')
-        // https://drive.google.com/uc?id=16Q8Il1KQaUIrPEicBJAsxrSXPiVtzltc&export=media%22
-          //Storage::disk('google_event_images')->put($file_date_title, base64_decode($request->image['new_image']['value']));
+          $file_date_title = 'event-images/'.date('Y_m_d_H_i_s').'.jpeg';
 
           $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
           Storage::disk('dropbox')->put($file_date_title, base64_decode($request->image['new_image']['value']));
