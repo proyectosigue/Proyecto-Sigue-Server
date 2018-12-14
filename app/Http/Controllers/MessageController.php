@@ -45,8 +45,13 @@ class MessageController extends Controller
 
                 if(!$threadUserNotification) {
 
-                    $title = 'Mensaje de ' . $message->replier->first_name . ' sobre ' . $thread->subject;
-                    FcmStream::sendMessageNotification($title, 'Tienes 1 o más mensajes', $message->receiver->fcm_token);
+                    $title = 'Mensaje de Proyecto Sigue';
+
+                    FcmStream::sendMessageNotification(
+                        $thread->load('lastMessage', 'notification'),
+                        $title,
+                        'Tienes 1 o más mensajes de '. $message->replier->first_name . ' sobre ' . $thread->subject,
+                        $message->receiver->fcm_token);
 
                     Notification::saveSingleNotification($message->receiver->id, $thread->id, $message->id);
                 }
