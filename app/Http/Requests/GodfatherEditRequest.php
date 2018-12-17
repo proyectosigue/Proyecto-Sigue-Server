@@ -28,6 +28,7 @@ class GodfatherEditRequest extends FormRequest
         return [
             'first_name' => 'required',
             'last_name' => 'required',
+            'phone' => 'required|digits:10',
             'email' => 'required|email'
         ];
     }

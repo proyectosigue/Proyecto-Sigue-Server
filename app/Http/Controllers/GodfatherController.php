@@ -44,6 +44,7 @@ class GodfatherController extends Controller
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'interests' => $request->input('interests'),
+                'phone' => $request->input('phone'),
                 'password' => Hash::make($request->input('password')),
                 'email' => $request->input('email'),
                 'profile_image' => ''
@@ -74,6 +75,7 @@ class GodfatherController extends Controller
             $godfather = User::find($godfather);
             $godfather->first_name = $request->first_name;
             $godfather->last_name = $request->last_name;
+            $godfather->phone = $request->phone;
             $godfather->interests = isset($request->interests) ? $request->interests : null;
             $godfather->email = $request->email;
 
