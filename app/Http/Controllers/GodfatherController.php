@@ -175,7 +175,7 @@ class GodfatherController extends Controller
     public function getGodsons(User $user)
     {
         try {
-            return response()->json(['status' => 'Success', 'data' => $user->godsons]);
+            return response()->json(['status' => 'Success', 'data' => $user->godsons->load('godfathers')]);
         } catch (Exception $e) {
             return response()->json(['status' => 'Error', 'messages' =>
                 ['Ocurrió un error al borrar'],

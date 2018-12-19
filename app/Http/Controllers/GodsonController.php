@@ -13,7 +13,8 @@ class GodsonController extends Controller
 {
     public function index()
     {
-        $godsons = Godson::orderBy('id', 'asc')->where('status', 1)->get();
+        $godsons = Godson::orderBy('id', 'asc')->where('status', 1)
+            ->with('godfathers')->get();
         return response()->json($godsons);
     }
 
