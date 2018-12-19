@@ -32,7 +32,7 @@ class GodsonController extends Controller
     public function store(GodsonRequest $request)
     {
         try {
-            if ($request->profile_image) {
+            if (isset($request->profile_image)) {
               $file_date_title = date('Y_m_d_H_i_s').'.jpeg';
               $photography_url = "profile-images-godsons/$file_date_title";
 
@@ -83,9 +83,11 @@ class GodsonController extends Controller
                 Storage::disk('dropbox')->put($full_file_address, base64_decode($request->profile_image));
                 $shared_response = $dropbox->createSharedLinkWithSettings($full_file_address, ["requested_visibility" => "public"]);
                 $photography_url = str_replace("?dl=0", "?dl=1", $shared_response['url']);
-            }
-            else {
-                $photography_url = "";
+
+            } else if($godson->profile_image){
+                $photography_url = $godson->profile_image;
+            } else {
+                $photography_url = '';
             }
 
             $godson->update([
@@ -95,6 +97,13 @@ class GodsonController extends Controller
                 'age' => $request->input('age'),
                 'orphan_house_id' => $request->input('orphan_house_id')
             ]);
+
+            if($request->godfather_id){
+                if($godson->godfather_id)
+                    $godson->godfathers()->detach($godson->godfather_id);
+
+                $godson->godfathers()->attach($request->godfather_id);
+            }
 
             return response()->json(['status' => 'Éxito', 'messages' => ['Se ha actualizado la información del ahijado']]);
         } catch (Exception $e) {
