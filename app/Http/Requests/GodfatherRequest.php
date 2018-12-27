@@ -29,8 +29,9 @@ class GodfatherRequest extends FormRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'phone' => 'required|digits:10',
-            'password' => 'required',
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required',
         ];
     }
 
@@ -38,10 +39,14 @@ class GodfatherRequest extends FormRequest
     {
         return [
             'password.required' => 'La contraseña es obligatoria',
+            'password.confirmed' => 'Las contraseñas deben coincidir',
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email debe ser válido',
             'first_name.required' => 'Escriba su nombre por favor',
-            'last_name.required' => 'Escriba su apellido por favor'
+            'last_name.required' => 'Escriba su apellido por favor',
+            'phone.required' => 'El numero de telefono es obligatorio',
+            'phone.digits' => 'El numero de telefono debe contener unicamente digitos',
+            'password_confirmation.required' => 'El campo de confirmacion de contraseña es obligatorio',
         ];
     }
 
