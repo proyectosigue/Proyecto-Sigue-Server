@@ -29,7 +29,8 @@ class GodfatherEditRequest extends FormRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'phone' => 'required|digits:10',
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'password' => 'sometimes|confirmed',
         ];
     }
 
@@ -39,7 +40,8 @@ class GodfatherEditRequest extends FormRequest
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email debe ser válido',
             'first_name.required' => 'Escriba su nombre por favor',
-            'last_name.required' => 'Escriba su apellido por favor'
+            'last_name.required' => 'Escriba su apellido por favor',
+            'password.confirmed' => 'Ambas contraseñas deben coincidir',
         ];
     }
 
