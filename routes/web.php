@@ -17,6 +17,9 @@ Route::get("/", function () {
     return view("welcome");
 });
 
+Route::get('password/reset-form/{token}', 'Api\Auth\ResetPasswordController@resetPasswordForm');
+Route::post('password/reset', 'Api\Auth\ResetPasswordController@resetPassword');
+
 Route::post("login", "AuthenticateController@authenticate")->name("login");
 Route::post("godfathers/sign-up", "GodfatherController@store");
 Route::post('godfathers/{user}/upload-profile-image', 'GodfatherController@uploadProfileImage');
