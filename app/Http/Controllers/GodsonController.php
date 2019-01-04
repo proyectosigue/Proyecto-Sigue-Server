@@ -98,12 +98,9 @@ class GodsonController extends Controller
                 'orphan_house_id' => $request->input('orphan_house_id')
             ]);
 
-            if($request->godfather_id){
-                if($godson->godfather_id)
-                    $godson->godfathers()->detach($godson->godfather_id);
 
-                $godson->godfathers()->attach($request->godfather_id);
-            }
+            $godson->godfathers()->detach($godson->godfather_id);
+            $godson->godfathers()->attach($request->godfather_id);
 
             return response()->json(['status' => 'Éxito', 'messages' => ['Se ha actualizado la información del ahijado']]);
         } catch (Exception $e) {
