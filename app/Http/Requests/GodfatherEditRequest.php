@@ -42,6 +42,8 @@ class GodfatherEditRequest extends FormRequest
             'first_name.required' => 'Escriba su nombre por favor',
             'last_name.required' => 'Escriba su apellido por favor',
             'password.confirmed' => 'Ambas contraseñas deben coincidir',
+            'phone.required' => 'El numero de telefono es requerido',
+            'phone.digits' => 'El numero de telefono debe contener 10 digitos',
         ];
     }
 
