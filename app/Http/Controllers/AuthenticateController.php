@@ -12,14 +12,15 @@ class AuthenticateController extends Controller
     public function authenticate(Request $request){
         $credentials = $request->only("email", "password");
         try {
-            if(!$token = JWTAuth::attempt($credentials)){
+            $token = JWTAuth::attempt($credentials);
+            if(!$token || (Auth::user() && !Auth::user()->status) ){
                 return response()->json(["status" => "Error", "message" => "Credenciales Inválidas"]);
             }
         }
         catch(JWTException $e){
             return response()->json(["status" => "Error", "message" => "No se pudo obtener el token"]);
         }
-        
+
         $response = compact(['token']);
         $response['user'] = Auth::user();
 
