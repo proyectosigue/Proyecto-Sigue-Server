@@ -7,20 +7,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ResetPasswordMail extends Mailable
+class GodfatherWelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $token;
+    public $authInfo;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct($authInfo)
     {
-        $this->token = $token;
+        $this->authInfo = $authInfo;
     }
 
     /**
@@ -30,9 +30,9 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Reestablecer Contraseña')
-                    ->markdown('Email.password_reset')->with([
-                        'token' => $this->token
+        return $this->subject('Bienvenido a Proyecto Sigue')
+                    ->markdown('Email.godfather_welcome')->with([
+                        'auth_info' => $this->authInfo,
                     ]);
     }
 }

@@ -41,15 +41,20 @@ class EventController extends Controller
 
         }
 
-        return response()->json([
+        $response_to_send = [
             'header' => 'Éxito',
             'status' => 'success',
             'messages' => ['Se ha registrado la noticia'],
             'data' => [
                 'id' => $eventInstance->id,
-                'file' => $response
-            ]
-        ]);
+            ],
+        ];
+
+        if (isset($response)) {
+            $response_to_send['data']['file'] = $response;
+        }
+
+        return response()->json($response_to_send);
 
       } catch (Exception $e) {
         return response()->json(['header' => 'Error', 'status' => 'error', 'messages' =>

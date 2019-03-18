@@ -28,8 +28,8 @@ class ResetPasswordController extends Controller
     public function resetPassword(ChangePasswordRequest $request)
     {
         $validFields = DB::table('password_resets')->where('email', $request->email)
-                                                  ->where('token', $request->token)
-                                                  ->first();
+                                                   ->where('token', $request->token)
+                                                   ->first();
 
         if ($validFields) {
             $user = User::whereEmail($request->email)->update([

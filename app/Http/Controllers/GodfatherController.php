@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Hash;
-use App\User;
-use App\Role;
-use Exception;
 use App\Godson;
-use App\Thread;
-use Spatie\Dropbox\Client;
-use Illuminate\Http\Request;
-use App\Http\Requests\GodfatherRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\GodfatherEditRequest;
+use App\Http\Requests\GodfatherRequest;
+use App\Mail\GodfatherWelcomeMail;
+use App\Role;
+use App\Thread;
+use App\User;
+use Exception;
+use Hash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Dropbox\Client;
 
 class GodfatherController extends Controller
 {
@@ -37,6 +39,11 @@ class GodfatherController extends Controller
         if (count(User::where('email', $request->input('email'))->get()) > 0) {
             return response()->json(['status' => 'Error', 'messages' => ['El email ya está dado de alta']]);
         }
+
+        $this->sendGodfatherWelcomeEmail([
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ]);
 
         try {
 
@@ -181,6 +188,11 @@ class GodfatherController extends Controller
                 ['Ocurrió un error al borrar'],
                 ['debug' => $e->getMessage() . ' on line ' . $e->getLine()]]);
         }
+    }
+
+    private function sendGodfatherWelcomeEmail($authInfo)
+    {
+        Mail::to($authInfo['email'])->send(new GodfatherWelcomeMail($authInfo));
     }
 
 }

@@ -13,12 +13,12 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = [   
+        $user = [
             'first_name' => 'Daniela',
             'last_name' => 'Sánchez',
-            'email' => '',
+            'email' => 'coordinacion@proyectosigue.com.mx',
             'interests' => 'Proyecto Sigue',
-            'profile_image' => '',  
+            'profile_image' => '',
             'password' => Hash::make('123456')
         ];
         $user_instance = User::create($user);
